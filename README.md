@@ -1,9 +1,8 @@
+## Change Log
+* Set max IV's on healing
+* Set new game pc items
+
 # Pokémon FireRed and LeafGreen
-
-[![Build Status][travis-badge]][travis]
-
-[travis]: https://travis-ci.org/pret/pokefirered
-[travis-badge]: https://travis-ci.org/pret/pokefirered.svg?branch=master
 
 This is a disassembly of Pokémon FireRed and LeafGreen.
 
@@ -17,7 +16,7 @@ It builds the following ROMs:
 To set up the repository, see [INSTALL.md](INSTALL.md).
 
 
-## See also
+## More from PRET
 
 Other disassembly and/or decompilation projects:
 * [**Pokémon Red and Blue**](https://github.com/pret/pokered)

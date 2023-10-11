@@ -17,7 +17,7 @@
 #include "data.h"
 #include "constants/songs.h"
 
-#define INTRO_SPECIES SPECIES_NIDORAN_F
+#define INTRO_SPECIES SPECIES_CHARIZARD
 
 enum
 {
@@ -591,14 +591,14 @@ static const u8 *const sMaleNameChoices[] =
     gNameChoice_Red,
     gNameChoice_Fire,
     gNameChoice_Ash,
-    gNameChoice_Kene,
-    gNameChoice_Geki,
+    gNameChoice_Green,
+    gNameChoice_Leaf,
 #elif defined(LEAFGREEN)
     gNameChoice_Green,
     gNameChoice_Leaf,
     gNameChoice_Gary,
-    gNameChoice_Kaz,
-    gNameChoice_Toru,
+    gNameChoice_Red,
+    gNameChoice_Fire,
 #endif
     gNameChoice_Jak,
     gNameChoice_Janne,
