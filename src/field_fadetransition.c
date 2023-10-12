@@ -20,6 +20,7 @@
 #include "field_specials.h"
 #include "event_object_lock.h"
 #include "start_menu.h"
+#include "follow_me.h"
 #include "constants/songs.h"
 #include "constants/event_object_movement.h"
 #include "constants/event_objects.h"
@@ -124,7 +125,7 @@ static void WarpFadeOutScreenWithDelay(void) // Unused
     }
 }
 
-static void SetPlayerVisibility(bool8 visible)
+void SetPlayerVisibility(bool8 visible)
 {
     SetPlayerInvisibility(!visible);
 }
@@ -290,6 +291,7 @@ void FieldCB_DefaultWarpExit(void)
     Overworld_PlaySpecialMapMusic();
     QuestLog_DrawPreviouslyOnQuestHeaderIfInPlaybackMode();
     SetUpWarpExitTask(FALSE);
+    FollowMe_WarpSetEnd();
     LockPlayerFieldControls();
 }
 
@@ -323,6 +325,7 @@ static void Task_ExitDoor(u8 taskId)
     switch (task->data[0])
     {
     case 0: // Never reached
+        HideFollower();
         SetPlayerVisibility(0);
         FreezeObjectEvents();
         PlayerGetDestCoords(x, y);
@@ -330,6 +333,7 @@ static void Task_ExitDoor(u8 taskId)
         task->data[0] = 1;
         break;
     case 5:
+        HideFollower();
         SetPlayerVisibility(0);
         FreezeObjectEvents();
         DoOutwardBarnDoorWipe();
@@ -367,6 +371,8 @@ static void Task_ExitDoor(u8 taskId)
         if (FieldFadeTransitionBackgroundEffectIsFinished() && walkrun_is_standing_still() && !FieldIsDoorAnimationRunning() && !FuncIsActiveTask(Task_BarnDoorWipe))
         {
             ObjectEventClearHeldMovementIfFinished(&gObjectEvents[GetObjectEventIdByLocalIdAndMap(OBJ_EVENT_ID_PLAYER, 0, 0)]);
+            FollowMe_SetIndicatorToComeOutDoor();
+            FollowMe_WarpSetEnd();
             task->data[0] = 4;
         }
         break;
@@ -389,6 +395,8 @@ static void Task_ExitDoor(u8 taskId)
         break;
     case 3:
         if (task->data[1] < 0 || gTasks[task->data[1]].isActive != TRUE)
+            FollowMe_SetIndicatorToComeOutDoor();
+            FollowMe_WarpSetEnd();
             task->data[0] = 4;
         break;
     case 4:
@@ -408,6 +416,7 @@ static void Task_ExitNonAnimDoor(u8 taskId)
     switch (task->data[0])
     {
     case 0:
+        HideFollower();
         SetPlayerVisibility(0);
         FreezeObjectEvents();
         PlayerGetDestCoords(x, y);
@@ -424,6 +433,8 @@ static void Task_ExitNonAnimDoor(u8 taskId)
     case 2:
         if (walkrun_is_standing_still())
         {
+            FollowMe_SetIndicatorToComeOutDoor();
+            FollowMe_WarpSetEnd();
             task->data[0] = 3;
         }
         break;

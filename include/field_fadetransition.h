@@ -13,6 +13,7 @@ void DoTeleportWarp(void);
 void DoTeleport2Warp(void);
 void FieldCB_DefaultWarpExit(void);
 void WarpFadeOutScreen(void);
+void SetPlayerVisibility(bool8 visible);
 void FieldCB_ContinueScriptHandleMusic(void);
 void FadeInFromBlack(void);
 void FadeTransition_FadeInOnReturnToStartMenu(void);

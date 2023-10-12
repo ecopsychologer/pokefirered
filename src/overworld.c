@@ -47,12 +47,14 @@
 #include "trainer_pokemon_sprites.h"
 #include "vs_seeker.h"
 #include "wild_encounter.h"
+#include "follow_me.h"
 #include "constants/cable_club.h"
 #include "constants/event_objects.h"
 #include "constants/maps.h"
 #include "constants/region_map_sections.h"
 #include "constants/songs.h"
 #include "constants/sound.h"
+#include "constants/event_object_movement.h"
 
 #define PLAYER_LINK_STATE_IDLE 0x80
 #define PLAYER_LINK_STATE_BUSY 0x81
@@ -335,6 +337,8 @@ static void Overworld_ResetStateAfterWhitingOut(void)
     FlagClear(FLAG_SYS_FLASH_ACTIVE);
     FlagClear(FLAG_SYS_QL_DEPARTED);
     VarSet(VAR_QL_ENTRANCE, 0);
+
+    FollowMe_TryRemoveFollowerOnWhiteOut();
 }
 
 static void Overworld_ResetStateOnContinue(void)
@@ -1408,6 +1412,9 @@ static void DoCB1_Overworld(u16 newKeys, u16 heldKeys)
         {
             player_step(fieldInput.dpadDirection, newKeys, heldKeys);
         }
+        // if stop running but keep holding B -> fix follower frame
+        if (PlayerHasFollower() && IsPlayerOnFoot() && gPlayerAvatar.tileTransitionState == T_NOT_MOVING)
+            ObjectEventSetHeldMovement(&gObjectEvents[GetFollowerObjectId()], GetFaceDirectionAnimNum(gObjectEvents[GetFollowerObjectId()].facingDirection));
     }
     RunQuestLogCB();
 }
@@ -1939,6 +1946,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
     case 2:
         InitViewGraphics();
         SetHelpContextForMap();
+        FollowMe_BindToSurbBlobOnReloadScreen();
         (*state)++;
         break;
     case 3:
@@ -2134,6 +2142,8 @@ static void InitObjectEventsLocal(void)
     ResetInitialPlayerAvatarState();
     TrySpawnObjectEvents(0, 0);
     TryRunOnWarpIntoMapScript();
+
+    FollowMe_HandleSprite();
 }
 
 static void ReloadObjectsAndRunReturnToFieldMapScript(void)

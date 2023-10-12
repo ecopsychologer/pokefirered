@@ -19,6 +19,7 @@
 #include "random.h"
 #include "script.h"
 #include "strings.h"
+#include "follow_me.h"
 #include "wild_encounter.h"
 #include "constants/event_object_movement.h"
 #include "constants/event_objects.h"
@@ -514,7 +515,7 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
     }
 
     if ((heldKeys & B_BUTTON) && FlagGet(FLAG_SYS_B_DASH)
-        && !IsRunningDisallowed(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior))
+        && !IsRunningDisallowed(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior) && !FollowerComingThroughDoor())
     {
         if (PlayerIsMovingOnRockStairs(direction))
             PlayerRunSlow(direction);
@@ -1313,6 +1314,7 @@ void InitPlayerAvatar(s16 x, s16 y, u8 direction, u8 gender)
     gPlayerAvatar.spriteId = objectEvent->spriteId;
     gPlayerAvatar.gender = gender;
     SetPlayerAvatarStateMask(PLAYER_AVATAR_FLAG_CONTROLLABLE | PLAYER_AVATAR_FLAG_ON_FOOT);
+    CreateFollowerAvatar();
 }
 
 void SetPlayerInvisibility(bool8 invisible)
@@ -1578,12 +1580,14 @@ static void CreateStopSurfingTask(u8 direction)
     FreezeObjectEvents();
     Overworld_ClearSavedMusic();
     Overworld_ChangeMusicToDefault();
-    gPlayerAvatar.flags &= ~PLAYER_AVATAR_FLAG_SURFING;
+    gPlayerAvatar.flags ^= PLAYER_AVATAR_FLAG_SURFING;
     gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_ON_FOOT;
     gPlayerAvatar.preventStep = TRUE;
     taskId = CreateTask(Task_StopSurfingInit, 0xFF);
     gTasks[taskId].data[0] = direction;
     Task_StopSurfingInit(taskId);
+
+    PrepareFollowerDismountSurf();
 }
 
 void CreateStopSurfingTask_NoMusicChange(u8 direction)

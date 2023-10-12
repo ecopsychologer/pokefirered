@@ -200,8 +200,8 @@ void SetAndStartSpriteAnim(struct Sprite *, u8, u8);
 bool8 SpriteAnimEnded(struct Sprite *);
 u8 ObjectEventGetHeldMovementActionId(struct ObjectEvent *objectEvent);
 u8 GetMoveDirectionAnimNum(u8 direction);
-struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup);
-u8 TrySpawnObjectEventTemplate(struct ObjectEventTemplate *objectEventTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY);
+const struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup);
+u8 TrySpawnObjectEventTemplate(const struct ObjectEventTemplate *objectEventTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY);
 
 // Exported data declarations
 

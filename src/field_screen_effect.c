@@ -12,6 +12,7 @@
 #include "event_object_movement.h"
 #include "field_fadetransition.h"
 #include "event_scripts.h"
+#include "follow_me.h"
 #include "constants/heal_locations.h"
 #include "constants/maps.h"
 

@@ -54,6 +54,7 @@
 #include "task.h"
 #include "teachy_tv.h"
 #include "text_window.h"
+#include "follow_me.h"
 #include "tm_case.h"
 #include "trade.h"
 #include "union_room.h"
