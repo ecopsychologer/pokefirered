@@ -200,6 +200,8 @@ void SetAndStartSpriteAnim(struct Sprite *, u8, u8);
 bool8 SpriteAnimEnded(struct Sprite *);
 u8 ObjectEventGetHeldMovementActionId(struct ObjectEvent *objectEvent);
 u8 GetMoveDirectionAnimNum(u8 direction);
+struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup);
+u8 TrySpawnObjectEventTemplate(struct ObjectEventTemplate *objectEventTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY);
 
 // Exported data declarations
 
@@ -232,5 +234,8 @@ u8 GetJumpSpecialWithEffectMovementAction(u32 direction);
 u8 GetFishingBiteDirectionAnimNum(u8 direction);
 void TrySpawnObjectEvents(s16 cameraX, s16 cameraY);
 void ResetObjectEvents(void);
+u16 GetMiniStepCount(u8 speed);
+void RunMiniStep(struct Sprite *sprite, u8 speed, u8 currentFrame);
+bool8 PlayerIsUnderWaterfall(struct ObjectEvent *objectEvent);
 
 #endif // GUARD_EVENT_OBJECT_MOVEMENT_H

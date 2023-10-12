@@ -12,4 +12,7 @@ void WriteFlashScanlineEffectBuffer(u8 flashLevel);
 
 extern const s32 gMaxFlashLevel;
 
+void SetPlayerVisibility(bool8 visible);
+void Task_WarpAndLoadMap(u8 taskId);
+
 #endif // GUARD_FIELD_SCREEN_EFFECT_H

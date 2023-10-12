@@ -1,6 +1,7 @@
 ## Change Log
 * Set max IV's on healing
 * Set new game pc items
+* Beginning to implement follow_me scripting based on ghoulslash's pokeemerald repo
 
 # Pokémon FireRed and LeafGreen
 
