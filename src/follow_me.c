@@ -5,6 +5,7 @@
 #include "field_effect.h"
 #include "field_effect_helpers.h"
 #include "field_player_avatar.h"
+#include "field_fadetransition.h"
 #include "field_control_avatar.h"
 #include "field_screen_effect.h"
 #include "field_weather.h"
@@ -207,18 +208,22 @@ static u16 GetFollowerSprite(void)
 
     return gSaveBlock2Ptr->follower.graphicsId;
 }
-// unused
+// unused 
+
 static void TryUpdateFollowerSpriteUnderwater(void)
 {
     if (gMapHeader.mapType == MAP_TYPE_UNDERWATER)
     {
+        return;
+        /*
         struct ObjectEvent* follower = &gObjectEvents[GetFollowerMapObjId()];
         SetFollowerSprite(FOLLOWER_SPRITE_INDEX_UNDERWATER);
 
         follower = &gObjectEvents[GetFollowerMapObjId()]; //Can change on reload sprite
         follower->fieldEffectSpriteId = StartUnderwaterSurfBlobBobbing(follower->spriteId);
+        */
     }
-}
+} 
 
 //Actual Follow Me
 void FollowMe(struct ObjectEvent* npc, u8 state, bool8 ignoreScriptActive)
@@ -233,7 +238,7 @@ void FollowMe(struct ObjectEvent* npc, u8 state, bool8 ignoreScriptActive)
         return;
     else if (!gSaveBlock2Ptr->follower.inProgress)
         return;
-    else if (ScriptContext2_IsEnabled() && !ignoreScriptActive)
+    else if (ScriptContext_IsEnabled() && !ignoreScriptActive)
         return; //Don't follow during a script
                 
     
@@ -272,10 +277,6 @@ void FollowMe(struct ObjectEvent* npc, u8 state, bool8 ignoreScriptActive)
             SetUpSurfBlobFieldEffect(follower);
             follower->fieldEffectSpriteId = FieldEffectStart(FLDEFF_SURF_BLOB);
             SetSurfBlob_BobState(follower->fieldEffectSpriteId, 1);
-        }
-        else
-        {
-            TryUpdateFollowerSpriteUnderwater();
         }
     }
 
@@ -462,8 +463,10 @@ static u8 DetermineFollowerState(struct ObjectEvent* follower, u8 state, u8 dire
         RETURN_STATE(MOVEMENT_ACTION_ACRO_POP_WHEELIE_MOVE_DOWN, direction);
     case MOVEMENT_ACTION_ACRO_WHEELIE_MOVE_DOWN ... MOVEMENT_ACTION_ACRO_WHEELIE_MOVE_RIGHT:
         RETURN_STATE(MOVEMENT_ACTION_ACRO_WHEELIE_MOVE_DOWN, direction);
+        /*
     case MOVEMENT_ACTION_ACRO_END_WHEELIE_MOVE_DOWN ... MOVEMENT_ACTION_ACRO_END_WHEELIE_MOVE_RIGHT:
         RETURN_STATE(MOVEMENT_ACTION_ACRO_END_WHEELIE_MOVE_DOWN, direction);
+        */
         
     // Sliding
     case MOVEMENT_ACTION_SLIDE_DOWN ... MOVEMENT_ACTION_SLIDE_RIGHT:
@@ -522,7 +525,7 @@ static bool8 IsStateMovement(u8 state)
     case MOVEMENT_ACTION_SET_VISIBLE:
     case MOVEMENT_ACTION_EMOTE_EXCLAMATION_MARK:
     case MOVEMENT_ACTION_EMOTE_QUESTION_MARK:
-    case MOVEMENT_ACTION_EMOTE_HEART:
+    //case MOVEMENT_ACTION_EMOTE_HEART:
     //case MOVEMENT_ACTION_EMOTE_CROSS:
     //case MOVEMENT_ACTION_EMOTE_DOUBLE_EXCLAMATION_MARK:
     //case MOVEMENT_ACTION_EMOTE_HAPPY:
@@ -759,7 +762,7 @@ static void Task_FinishSurfDismount(u8 taskId)
     gPlayerAvatar.preventStep = FALSE;
 }
 
-void Task_DoDoorWarp(u8 taskId)
+void Task_DoorWarp(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
     s16 *x = &task->data[2];
@@ -824,13 +827,13 @@ void Task_DoDoorWarp(u8 taskId)
         WarpFadeOutScreen();
         PlayRainStoppingSoundEffect();
         task->data[0] = 0;
-        task->func = Task_WarpAndLoadMap;
+        task->func = Task_TeleportWarp;
         break;
     case 5:
         TryFadeOutOldMapMusic();
         PlayRainStoppingSoundEffect();
         task->data[0] = 0;
-        task->func = Task_WarpAndLoadMap;
+        task->func = Task_TeleportWarp;
         break;
     }
 }
@@ -1185,18 +1188,18 @@ void CreateFollowerAvatar(void)
     //clone.graphicsIdUpperByte = GetFollowerSprite() >> 8;
     clone.x = player->currentCoords.x - 7;
     clone.y = player->currentCoords.y - 7;
-    clone.movementType = 0; //Doesn't get to move on its own
+    clone.objUnion.normal.movementType = 0; //Doesn't get to move on its own
 
     switch (GetPlayerFacingDirection())
     {
     case DIR_NORTH:
-        clone.movementType = MOVEMENT_TYPE_FACE_UP;
+        clone.objUnion.normal.movementType = MOVEMENT_TYPE_FACE_UP;
         break;
     case DIR_WEST:
-        clone.movementType = MOVEMENT_TYPE_FACE_LEFT;
+        clone.objUnion.normal.movementType = MOVEMENT_TYPE_FACE_LEFT;
         break;
     case DIR_EAST:
-        clone.movementType = MOVEMENT_TYPE_FACE_RIGHT;
+        clone.objUnion.normal.movementType = MOVEMENT_TYPE_FACE_RIGHT;
         break;
     }
 
@@ -1230,7 +1233,7 @@ static void TurnNPCIntoFollower(u8 localId, u16 followerFlags)
         {
             follower = &gObjectEvents[eventObjId];
             follower->movementType = MOVEMENT_TYPE_NONE; //Doesn't get to move on its own anymore
-            gSprites[follower->spriteId].callback = MovementType_None; //MovementType_None
+            gSprites[follower->spriteId].callback = MOVEMENT_TYPE_NONE; //MovementType_None
             SetObjEventTemplateMovementType(localId, 0);
             if (followerFlags & FOLLOWER_FLAG_CUSTOM_FOLLOW_SCRIPT)
                 script = (const u8 *)ReadWord(0);

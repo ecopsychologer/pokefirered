@@ -32,8 +32,8 @@ static void Task_ExitNonAnimDoor(u8 taskId);
 static void Task_ExitNonDoor(u8 taskId);
 static void Task_TeleportWarpIn(u8 taskId);
 static void Task_Teleport2Warp(u8 taskId);
-static void Task_TeleportWarp(u8 taskId);
-static void Task_DoorWarp(u8 taskId);
+void Task_TeleportWarp(u8 taskId);
+//static void Task_DoorWarp(u8 taskId);
 static void Task_StairWarp(u8 taskId);
 static void ForceStairsMovement(u16 metatileBehavior, s16 *x, s16 *y);
 static void GetStairsMovementDirection(u8 metatileBehavior, s16 *x, s16 *y);
@@ -717,7 +717,7 @@ static void Task_Teleport2Warp(u8 taskId)
     }
 }
 
-static void Task_TeleportWarp(u8 taskId)
+void Task_TeleportWarp(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
     switch (task->data[0])
@@ -748,56 +748,94 @@ static void Task_TeleportWarp(u8 taskId)
     }
 }
 
-static void Task_DoorWarp(u8 taskId)
+/*
+ void Task_WarpAndLoadMap(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
-    s16 *xp = &task->data[2];
-    s16 *yp = &task->data[3];
     switch (task->data[0])
     {
     case 0:
         FreezeObjectEvents();
-        PlayerGetDestCoords(xp, yp);
-        PlaySE(GetDoorSoundEffect(*xp, *yp - 1));
-        task->data[1] = FieldAnimateDoorOpen(*xp, *yp - 1);
+        ScriptContext_Enable();
+        task->data[0]++;
+        break;
+    case 1:
+        if (!gPaletteFade.active)
+        {
+            if (task->data[1] == 0)
+            {
+                ClearMirageTowerPulseBlendEffect();
+                task->data[1] = 1;
+            }
+            if (BGMusicStopped())
+                task->data[0]++;
+        }
+        break;
+    case 2:
+        WarpIntoMap();
+        SetMainCallback2(CB2_LoadMap);
+        DestroyTask(taskId);
+        break;
+    }
+}
+static void Task_DoorWarp(u8 taskId)
+{
+    struct ObjectEvent *follower = &gObjectEvents[GetFollowerMapObjId()];
+    struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
+    struct Task *task = &gTasks[taskId];
+    s16 *x = &task->data[2];
+    s16 *y = &task->data[3];
+    
+    //if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_DASH) && ObjectEventClearHeldMovementIfFinished(player))
+        //SetPlayerAvatarTransitionFlags(PLAYER_AVATAR_FLAG_ON_FOOT); //Temporarily stop running
+
+    if (ObjectEventClearHeldMovementIfFinished(player))
+        ObjectEventTurn(player, GetPlayerFaceToDoorDirection(player, follower)); //The player should face towards the follow as the exit the door
+
+    switch (task->data[0])
+    {
+    case 0:
+        FreezeObjectEvents();
+        task->data[1] = FieldAnimateDoorOpen(follower->currentCoords.x, follower->currentCoords.y);
+        if (task->data[1] != -1)
+            PlaySE(GetDoorSoundEffect(*x, *y)); //only play SE for animating doors
+        
         task->data[0] = 1;
         break;
     case 1:
-        if (task->data[1] < 0 || gTasks[task->data[1]].isActive != TRUE)
+        if (task->data[1] < 0 || gTasks[task->data[1]].isActive != TRUE) //if Door isn't still opening
         {
-            ObjectEventClearHeldMovementIfActive(&gObjectEvents[GetObjectEventIdByLocalIdAndMap(OBJ_EVENT_ID_PLAYER, 0, 0)]);
-            ObjectEventSetHeldMovement(&gObjectEvents[GetObjectEventIdByLocalIdAndMap(OBJ_EVENT_ID_PLAYER, 0, 0)], MOVEMENT_ACTION_WALK_NORMAL_UP);
+            follower->invisible = FALSE;
+            ObjectEventTurn(follower, DIR_SOUTH); //The follower should be facing down when it comes out the door
+            follower->singleMovementActive = FALSE;
+            follower->heldMovementActive = FALSE;
+            ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_DOWN); //follower step down
             task->data[0] = 2;
         }
         break;
     case 2:
-        if (walkrun_is_standing_still())
+        if (ObjectEventClearHeldMovementIfFinished(follower))
         {
-            task->data[1] = FieldAnimateDoorClose(*xp, *yp - 1);
-            ObjectEventClearHeldMovementIfFinished(&gObjectEvents[GetObjectEventIdByLocalIdAndMap(OBJ_EVENT_ID_PLAYER, 0, 0)]);
-            SetPlayerVisibility(FALSE);
+            task->data[1] = FieldAnimateDoorClose(*x, *y);
             task->data[0] = 3;
         }
         break;
     case 3:
-        if (task->data[1] < 0 || gTasks[task->data[1]].isActive != TRUE)
+        if (task->data[1] < 0 || gTasks[task->data[1]].isActive != TRUE) //Door is closed
+        {
+            UnfreezeObjectEvents();
             task->data[0] = 4;
+        }
         break;
     case 4:
-        TryFadeOutOldMapMusic();
-        WarpFadeOutScreen();
-        PlayRainStoppingSoundEffect();
-        task->data[0] = 0;
-        task->func = Task_Teleport2Warp;
-        break;
-    case 5:
-        TryFadeOutOldMapMusic();
-        PlayRainStoppingSoundEffect();
-        task->data[0] = 0;
-        task->func = Task_Teleport2Warp;
+        FollowMe_HandleSprite();
+        gSaveBlock2Ptr->follower.comeOutDoorStairs = 0;
+        gPlayerAvatar.preventStep = FALSE; //Player can move again
+        DestroyTask(taskId);
         break;
     }
 }
+*/
 
 static void Task_StairWarp(u8 taskId)
 {

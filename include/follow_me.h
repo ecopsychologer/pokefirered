@@ -52,7 +52,7 @@ void SetFollowerSprite(u8 spriteIndex);
 bool8 PlayerHasFollower(void);
 
 // moved from field_screen_effect.c
-void Task_DoDoorWarp(u8 taskId);
+void Task_DoorWarp(u8 taskId);
 bool8 IsPlayerOnFoot(void);
 
 #endif //GUARD_FOLLOW_ME_H

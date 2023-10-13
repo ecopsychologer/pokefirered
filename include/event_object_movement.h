@@ -101,6 +101,7 @@ u8 SpawnSpecialObjectEvent(struct ObjectEventTemplate *);
 void CameraObjectReset1(void);
 void CameraObjectReset2(void);
 void ObjectEventSetGraphicsId(struct ObjectEvent *, u8);
+void RemoveObjectEvent(struct ObjectEvent *);
 void ObjectEventTurn(struct ObjectEvent *, u8);
 void ObjectEventTurnByLocalIdAndMap(u8, u8, u8, u8);
 void ObjectEventForceSetHeldMovement(struct ObjectEvent *, u8);
