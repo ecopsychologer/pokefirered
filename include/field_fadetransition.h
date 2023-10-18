@@ -10,6 +10,7 @@ void DoDoorWarp(void);
 
 void DoFallWarp(void);
 void DoTeleportWarp(void);
+void Task_WarpAndLoadMap(u8);
 void Task_TeleportWarp(u8);
 void DoTeleport2Warp(void);
 void FieldCB_DefaultWarpExit(void);

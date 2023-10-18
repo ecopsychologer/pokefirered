@@ -748,7 +748,7 @@ void Task_TeleportWarp(u8 taskId)
     }
 }
 
-/*
+
  void Task_WarpAndLoadMap(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
@@ -762,11 +762,6 @@ void Task_TeleportWarp(u8 taskId)
     case 1:
         if (!gPaletteFade.active)
         {
-            if (task->data[1] == 0)
-            {
-                ClearMirageTowerPulseBlendEffect();
-                task->data[1] = 1;
-            }
             if (BGMusicStopped())
                 task->data[0]++;
         }
@@ -778,6 +773,8 @@ void Task_TeleportWarp(u8 taskId)
         break;
     }
 }
+
+/*
 static void Task_DoorWarp(u8 taskId)
 {
     struct ObjectEvent *follower = &gObjectEvents[GetFollowerMapObjId()];

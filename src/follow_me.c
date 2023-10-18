@@ -791,8 +791,7 @@ void Task_DoorWarp(u8 taskId)
 
             if (gSaveBlock2Ptr->follower.inProgress && !gObjectEvents[followerObjId].invisible)
             {
-                u8 newState = DetermineFollowerState(&gObjectEvents[followerObjId], MOVEMENT_ACTION_WALK_NORMAL_UP,
-                                                    DetermineFollowerDirection(&gObjectEvents[playerObjId], &gObjectEvents[followerObjId]));
+                u8 newState = DetermineFollowerState(&gObjectEvents[followerObjId], MOVEMENT_ACTION_WALK_NORMAL_UP,DetermineFollowerDirection(&gObjectEvents[playerObjId], &gObjectEvents[followerObjId]));
                 ObjectEventClearHeldMovementIfActive(&gObjectEvents[followerObjId]);
                 ObjectEventSetHeldMovement(&gObjectEvents[followerObjId], newState);
             }
@@ -827,13 +826,13 @@ void Task_DoorWarp(u8 taskId)
         WarpFadeOutScreen();
         PlayRainStoppingSoundEffect();
         task->data[0] = 0;
-        task->func = Task_TeleportWarp;
+        task->func = Task_WarpAndLoadMap;
         break;
     case 5:
         TryFadeOutOldMapMusic();
         PlayRainStoppingSoundEffect();
         task->data[0] = 0;
-        task->func = Task_TeleportWarp;
+        task->func = Task_WarpAndLoadMap;
         break;
     }
 }
