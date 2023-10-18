@@ -1,4 +1,5 @@
 // Pokemon
+/*
 const u32 gObjectEventPic_Bulbasaur[] = INCBIN_U32("graphics/object_events/pics/pokemon/bulbasaur.4bpp");
 const u32 gObjectEventPic_Ivysaur[] = INCBIN_U32("graphics/object_events/pics/pokemon/ivysaur.4bpp");
 const u32 gObjectEventPic_Venusaur[] = INCBIN_U32("graphics/object_events/pics/pokemon/venusaur.4bpp");
@@ -412,7 +413,7 @@ const u32 gObjectEventPic_Groudon[] = INCBIN_U32("graphics/object_events/pics/po
 const u32 gObjectEventPic_Rayquaza[] = INCBIN_U32("graphics/object_events/pics/pokemon/rayquaza.4bpp");
 const u32 gObjectEventPic_Jirachi[] = INCBIN_U32("graphics/object_events/pics/pokemon/jirachi.4bpp");
 const u32 gObjectEventPic_Deoxys[] = INCBIN_U32("graphics/object_events/pics/pokemon/deoxys.4bpp");
-
+*/
 // Palettes
 const u16 gObjectEventPal_Player[] = INCBIN_U16("graphics/object_events/palettes/player.gbapal");
 const u16 gObjectEventPal_PlayerUnused[] = INCBIN_U16("graphics/object_events/palettes/player_unused.gbapal"); // Identical except for the transparency
