@@ -1918,7 +1918,7 @@ u8 GenerateCurvedRandomLevel(s32 partySlot, u8 curveAmount) {
     }
     switch(curveAmount) {
         case 0: // default
-            curvedLVL = curvedLVL + 2*(slot/2) + (Random() % 4); 
+            curvedLVL = curvedLVL + 2*(slot/2) + (Random() % 5) - (Random() % 2); 
             break;
         case 1: // 2nd hardest
             curvedLVL = curvedLVL + 3 + slot + (Random() % 3); 
@@ -1941,6 +1941,8 @@ u8 GenerateCurvedRandomLevel(s32 partySlot, u8 curveAmount) {
         curvedLVL = 1;
     } else if (curvedLVL > 100) {
         curvedLVL = 100;
+    } else if ((curvedLVL - levels[0]) >= 3 && (levels[0] <= 10)) { // basically for starting out
+        curvedLVL = levels[0] - (Random() % 3) + 1 + (Random() % 2);
     }
 
     return curvedLVL;
