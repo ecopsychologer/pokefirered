@@ -98,17 +98,8 @@ static const struct MenuAction sMenuActions_ItemPc[] = {
 };
 
 static const struct ItemSlot gNewGamePCItems[] = {
-    { ITEM_POTION, 5 },
-    { ITEM_MAX_POTION, 999},
-    { ITEM_MAX_ELIXIR, 999},
-    { ITEM_MAX_REVIVE, 999},
-    { ITEM_PP_MAX, 999},
-    { ITEM_HP_UP, 999},
-    { ITEM_MASTER_BALL, 11 },
-    { ITEM_EXP_SHARE, 1 },
-    { ITEM_LUCKY_EGG, 20 },
-    { ITEM_LEFTOVERS, 20 },
-    { ITEM_NONE, 0 }
+    { ITEM_POTION, 1 },
+    { ITEM_NONE,   0 }
 };
 
 static const struct MenuAction sMenuActions_MailSubmenu[] = {
