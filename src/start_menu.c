@@ -36,11 +36,13 @@
 #include "help_system.h"
 #include "constants/songs.h"
 #include "constants/field_weather.h"
+#include "script_pokemon_util.h"
 
 enum StartMenuOption
 {
     STARTMENU_POKEDEX = 0,
     STARTMENU_POKEMON,
+    STARTMENU_HEAL,
     STARTMENU_BAG,
     STARTMENU_PLAYER,
     STARTMENU_SAVE,
@@ -80,6 +82,7 @@ static void StartMenu_FadeScreenIfLeavingOverworld(void);
 static bool8 StartMenuPokedexSanityCheck(void);
 static bool8 StartMenuPokedexCallback(void);
 static bool8 StartMenuPokemonCallback(void);
+static bool8 StartMenuHealCallback(void);
 static bool8 StartMenuBagCallback(void);
 static bool8 StartMenuPlayerCallback(void);
 static bool8 StartMenuSaveCallback(void);
@@ -115,6 +118,7 @@ static void CloseStartMenu(void);
 static const struct MenuAction sStartMenuActionTable[] = {
     { gText_MenuPokedex, {.u8_void = StartMenuPokedexCallback} },
     { gText_MenuPokemon, {.u8_void = StartMenuPokemonCallback} },
+    { gText_MenuHeal, {.u8_void = StartMenuHealCallback} },
     { gText_MenuBag, {.u8_void = StartMenuBagCallback} },
     { gText_MenuPlayer, {.u8_void = StartMenuPlayerCallback} },
     { gText_MenuSave, {.u8_void = StartMenuSaveCallback} },
@@ -215,6 +219,7 @@ static void SetUpStartMenu_NormalField(void)
         AppendToStartMenuItems(STARTMENU_POKEDEX);
     if (FlagGet(FLAG_SYS_POKEMON_GET) == TRUE)
         AppendToStartMenuItems(STARTMENU_POKEMON);
+    AppendToStartMenuItems(STARTMENU_HEAL);
     AppendToStartMenuItems(STARTMENU_BAG);
     AppendToStartMenuItems(STARTMENU_PLAYER);
     AppendToStartMenuItems(STARTMENU_SAVE);
@@ -483,6 +488,21 @@ static bool8 StartMenuPokemonCallback(void)
         DestroySafariZoneStatsWindow();
         CleanupOverworldWindowsAndTilemaps();
         SetMainCallback2(CB2_PartyMenuFromStartMenu);
+        return TRUE;
+    }
+    return FALSE;
+}
+
+static bool8 StartMenuHealCallback(void)
+{
+    if (!gPaletteFade.active)
+    {
+        PlayRainStoppingSoundEffect();
+        DestroySafariZoneStatsWindow();
+        CleanupOverworldWindowsAndTilemaps();
+        HealPlayerParty();
+        //FieldClearVBlankHBlankCallbacks();
+        SetMainCallback2(CB2_ReturnToFieldWithOpenMenu);
         return TRUE;
     }
     return FALSE;

@@ -6430,11 +6430,17 @@ Move_FLAMETHROWER:
 	createvisualtask AnimTask_ShakeMon, 5, ANIM_TARGET, 3, 0, 43, 1
 	call FlamethrowerCreateFlames
 	call FlamethrowerCreateFlames
+	createsprite gFireSpinSpriteTemplate, ANIM_TARGET, 2, 0, 28, 528, 30, 13, 50, ANIM_TARGET
 	call FlamethrowerCreateFlames
+	createsprite gFireSpinSpriteTemplate, ANIM_TARGET, 2, 0, 32, 480, 20, 16, -46, ANIM_TARGET
 	call FlamethrowerCreateFlames
+	createsprite gFireSpinSpriteTemplate, ANIM_TARGET, 2, 0, 33, 576, 20, 8, 42, ANIM_TARGET
 	call FlamethrowerCreateFlames
+	createsprite gFireSpinSpriteTemplate, ANIM_TARGET, 2, 0, 31, 400, 25, 11, -42, ANIM_TARGET
 	call FlamethrowerCreateFlames
+	createsprite gFireSpinSpriteTemplate, ANIM_TARGET, 2, 0, 28, 512, 25, 16, 46, ANIM_TARGET
 	call FlamethrowerCreateFlames
+	createsprite gFireSpinSpriteTemplate, ANIM_TARGET, 2, 0, 33, 464, 30, 15, -50, ANIM_TARGET
 	call FlamethrowerCreateFlames
 	waitforvisualfinish
 	clearmonbg ANIM_DEF_PARTNER

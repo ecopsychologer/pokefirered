@@ -8,6 +8,7 @@
 extern const u8 gMiscBlank_Gfx[]; // unused in Emerald
 extern const u32 gBitTable[];
 
+int CompareU8(const void*, const void*);
 u8 CreateInvisibleSpriteWithCallback(void (*)(struct Sprite *));
 void StoreWordInTwoHalfwords(u16 *, unsigned);
 void LoadWordFromTwoHalfwords(u16 *, unsigned *);
